@@ -17,5 +17,5 @@ RUN npm run build
 # Exponer puerto
 EXPOSE 3000
 
-# Comando de inicio
+# Comando de inicio (el .env se monta via docker-compose)
 CMD ["node", "dist/index.js"]

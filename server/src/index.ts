@@ -26,6 +26,11 @@ app.use('/api/productos', ProductosRouter);
 app.use('/api/maquinas', MaquinaRouter);
 app.use('/api/inventario', InventarioRouter);
 
+// Ruta health para Docker healthcheck
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 // Ruta de prueba
 app.get('/', (req, res) => {
   res.json({
