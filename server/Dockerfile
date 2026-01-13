@@ -2,18 +2,20 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copiar dependencias
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar TODAS las dependencias (incluye dev)
+# Instalar dependencias
 RUN npm install
 
-# Copiar código
+# Copiar código fuente
 COPY . .
 
 # Compilar TypeScript
 RUN npm run build
 
+# Exponer puerto
 EXPOSE 3000
 
+# Comando de inicio
 CMD ["node", "dist/index.js"]
