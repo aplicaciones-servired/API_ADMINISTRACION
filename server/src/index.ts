@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { PORT } from './config';
 import express from 'express';
 import log from 'morgan';
