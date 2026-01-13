@@ -95,7 +95,10 @@ El proyecto incluye un `Jenkinsfile` que automatiza:
 
 ## 📡 Endpoints
 
-La API está disponible en: `http://localhost:3001/api/`
+La API está disponible en:
+- **Con Proxy Nginx (Recomendado)**: `http://aplicacionesgane.cloud:8100/api/`
+- **Directo al contenedor**: `http://aplicacionesgane.cloud:3001/api/` (si el firewall lo permite)
+- **Localhost**: `http://localhost:8100/api/` (en el servidor)
 
 ### Productos
 - `POST /api/productos` - Crear producto
