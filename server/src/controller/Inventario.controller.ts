@@ -9,11 +9,18 @@ export class InventarioController {
    * Body: { idProducto, idLote, idUbicacion, cantidadActual }
    */
   static async crearInventario(req: Request, res: Response) {
+    console.log('\n🔵 === CREAR INVENTARIO - INICIO ===');
+    console.log('📥 Body recibido:', JSON.stringify(req.body, null, 2));
+    console.log('📋 Headers:', JSON.stringify(req.headers, null, 2));
+    
     try {
       const { idProducto, idLote, idUbicacion, cantidadActual } = req.body;
 
+      console.log('✅ Datos extraídos:', { idProducto, idLote, idUbicacion, cantidadActual });
+
       // Validaciones
       if (!idProducto || !idLote || !idUbicacion || cantidadActual === undefined) {
+        console.error('❌ Faltan campos requeridos');
         return res.status(400).json({ 
           error: 'Faltan campos requeridos: idProducto, idLote, idUbicacion, cantidadActual' 
         });
@@ -25,15 +32,19 @@ export class InventarioController {
         });
       }
 
+      console.log('🔄 Preparando query INSERT...');
       const query = `
         INSERT INTO MD_INVENTARIO 
         (ID_PRODUCTO, ID_LOTE, ID_UBICACION, CANTIDAD_ACTUAL)
         VALUES (?, ?, ?, ?)
       `;
 
+      console.log('⏳ Ejecutando query en base de datos...');
       const [result]: any = await sequelizeAdmin.query(query, {
         replacements: [idProducto, idLote, idUbicacion, cantidadActual]
       });
+
+      console.log('✅ Query ejecutado exitosamente. Result:', result);
 
       res.status(201).json({
         success: true,
@@ -48,10 +59,16 @@ export class InventarioController {
       });
 
     } catch (error: any) {
-      console.error('Error al crear inventario:', error);
+      console.error('\n❌ === ERROR AL CREAR INVENTARIO ===');
+      console.error('Tipo:', error.constructor.name);
+      console.error('Mensaje:', error.message);
+      console.error('Stack:', error.stack);
+      console.error('=================================\n');
+      
       res.status(500).json({ 
         error: 'Error al crear inventario',
-        detalle: error.message 
+        detalle: error.message,
+        tipo: error.constructor.name
       });
     }
   }

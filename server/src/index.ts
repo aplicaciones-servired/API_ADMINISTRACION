@@ -10,16 +10,33 @@ import InventarioRouter from './routes/inventario.routes';
 
 const app = express();
 
+// CORS configurado para aceptar todas las peticiones
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: false
+}));
+
 // Middleware para logging detallado
 app.use((req, res, next) => {
-  console.log(`📨 ${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log(`\n📨 ${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Origin:', req.headers.origin || 'No origin');
+  console.log('Content-Type:', req.headers['content-type'] || 'No content-type');
   next();
 });
 
 app.use(express.json());
-app.use(cors());
 app.use(log('dev'));
+
+// Middleware para errores de JSON parsing
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    console.error('❌ Error parsing JSON:', err.message);
+    return res.status(400).json({ error: 'JSON inválido', detalle: err.message });
+  }
+  next(err);
+});
 
 // Rutas
 app.use('/api/imagenes', ImagenesRouter);
@@ -76,7 +93,11 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n${'='.repeat(60)}`);
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`📱 Accesible desde red local en http://10.98.98.104:${PORT}`);
+  console.log(`🌐 Producción: https://administracion.serviredgane.cloud/`);
   console.log(`📦 MinIO: ${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}`);
+  console.log(`⚠️  NOTA: API sin autenticación - Todos los endpoints abiertos`);
+  console.log(`${'='.repeat(60)}\n`);
 });
